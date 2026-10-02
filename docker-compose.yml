@@ -1,0 +1,28 @@
+services:
+  nginx:
+    # Mainline incluye nginx-module-acme (ver plan.md P1).
+    # Pinneado a serie 1.29 (primera con el módulo); fijar parche tras T8 si se desea reproducibilidad exacta.
+    image: nginx:1.29-alpine
+    container_name: vps-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/snippets:/etc/nginx/snippets:ro
+      - ./nginx/static:/usr/share/nginx/placeholder:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+      - acme-state:/var/cache/nginx/acme
+    networks:
+      - vps-net
+
+networks:
+  vps-net:
+    name: vps-net
+    driver: bridge
+
+volumes:
+  acme-state:
+    name: acme-state

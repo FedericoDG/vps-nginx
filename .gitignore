@@ -1,0 +1,14 @@
+# Estado ACME y certs reales (volumen nombrado, no en repo)
+# Los certs provisionales self-signed de T7 sí se versionan; ignora solo datos de ejecución
+acme-state/
+data/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# No ignorar nginx/certs/placeholder.* (necesarios para T7)
+!nginx/certs/placeholder.crt
+!nginx/certs/placeholder.key
