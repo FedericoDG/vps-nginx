@@ -70,8 +70,8 @@
   - `docker logs nginx` muestra accesos (RF6).
 
 ### T8 — Emisión con ACME en staging (requiere VPS real)
-- **Estado:** pending
-- **Archivos:** `nginx/conf.d/00-acme-and-redirect.conf` (bloque `acme_issuer` apuntando a staging)
+- **Estado:** done — verificado en VPS: cert de staging emitido (volumen acme-state: `account.key` + `<hostname>-*.crt/key`), issuer `(STAGING) Baloney Bulgur YE2` servido en 443, `curl -sI http` → 301, challenge HTTP-01 con 200 desde validadores LE. Fix aplicado en el camino: `resolver ipv6=off` (bridge sin IPv6; LE staging tiene AAAA) y recreate de contenedor tras `git pull` (bind-mount por archivo ancla al inodo). Commits `6890d13` + `da10b7e`.
+- **Archivos:** `nginx/conf.d/00-acme-and-redirect.conf` (bloque `acme_issuer` apuntando a staging), `nginx/conf.d/10-placeholder.conf` (activación ACME en 443), `nginx/nginx.conf` (contacto + resolver)
 - **Depende de:** T7 + fases 0-1 del runbook (VPS con Docker + hostname DuckDNS resuelto)
 - **Scope:** configurar issuer ACME contra el entorno **staging** de Let's Encrypt, levantar en VPS y verificar issuance.
 - **AC:**

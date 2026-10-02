@@ -43,7 +43,7 @@ Este documento registra cada decisión técnica con su razonamiento y fallback. 
 
 ### P3 — Límites de tasa Let's Encrypt para hostnames DuckDNS
 
-**Estado:** pendiente de verificar al implementar (T8). La spec calcula "registered domain" vía Public Suffix List; para 1–3 hostnames es irrelevante en la práctica. Se valida empíricamente emitiendo contra **staging** primero y consultando `crt.sh`.
+**Estado:** validada en T8 (2026-10-02). Emisión staging exitosa primera-try (tras fix de resolver IPv4-only); sin rate limits. Contacto real configurado (`binariodevlabs@gmail.com`). Para producción (T9) se aplicará el mismo flujo; staging ya validó el hostname + método HTTP-01.
 
 ---
 
