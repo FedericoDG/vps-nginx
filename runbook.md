@@ -127,6 +127,11 @@ docker logs nginx 2>&1 | tail
 - Logs indican próximo ciclo de renovación programado.
 - Volumen `acme-state` persiste tras `docker compose down && docker compose up -d`.
 
+> Hallazgos de T9 (2026-10-02):
+> - **Setear staging/producción NO re-emite** si hay cert vigente en el estado: para cambiar de issuer, resetear el volumen (`docker compose down && docker volume rm acme-state && docker compose up -d`) y dejar re-bootstrapear la cuenta/cert. Cuenta de staging es independiente de la de producción.
+> - La renovación es interna al módulo (ARI sobre el `state_path`); no hay comando de dry-run observable. Verificación práctica: archivos `*.crt/key` en el volumen, `docker logs | grep -i acme` cerca del expiry, y re-emisión automática demostrada cuando el estado está vacío.
+> - Tras `git pull` que cambie archivos montados bind por archivo (nginx.conf), hacer `docker compose down && up -d`: los mount siguen al inodo viejo.
+
 ---
 
 ## Notas de repetibilidad

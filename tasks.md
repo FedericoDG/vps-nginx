@@ -81,13 +81,13 @@
   - P3 validada: staging no golpea rate limits de producción.
 
 ### T9 — Cambio a producción LE + verificación de renovación
-- **Estado:** pending
-- **Archivos:** `nginx/conf.d/00-acme-and-redirect.conf` (cambio de `uri` a producción)
+- **Estado:** done — verificado 2026-10-02: issuer apunta a producción, bootstrap en limpio (volumen `acme-state` reseteado: la cuenta y cert de staging no son válidos en producción), cert emitido serie ECDSA `YE2`, cadena hasta `ISRG Root X1`, `curl https://<hostname>/` sin `-k` → 200 (RF7 cerrado). Hallazgo: si hay un cert vigente en estado, el módulo no re-emite aunque cambie el issuer — el bootstrap limpio requiere reset del volumen. Commit `875911b`.
+- **Archivos:** `nginx/conf.d/00-acme-and-redirect.conf` (cambio de `uri` a producción), `nginx/nginx.conf`
 - **Depende de:** T8
 - **Scope:** cambiar issuer a producción, renovar/reemitir, y ejecutar verificación de renovación (dry-run / comprobación de estado en volumen + logs).
 - **AC:**
-  - `curl https://<hostname>/` sin `-k` valida contra CA de confianza (cert de producción, RF7 cerrado).
-  - Mecanismo de renovación verificado (comando/estado del módulo documentado en runbook).
+  - `curl https://<hostname>/` sin `-k` valida contra CA de confianza (cert de producción, RF7 cerrado) — ✅ verificado.
+  - Mecanismo de renovación verificado (comando/estado del módulo documentado en runbook) — ✅ estado persistido (`account.key/url` + cert en volumen, sobrevivió 3× down/up del incidente); re-emisión automática ante estado vacío demostrada. Verificación de renovación en vida real: quedará observable cerca de expiry (~31-dic) o vía logs del módulo; documentado en runbook Fase 5.
 
 ### T10 — Verificación final: runbook end-to-end
 - **Estado:** pending
