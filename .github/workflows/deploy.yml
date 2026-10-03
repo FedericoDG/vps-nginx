@@ -1,0 +1,37 @@
+name: deploy-to-vps
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-vps
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+      - name: Deploy and verify
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+              -o IdentitiesOnly=yes -i ~/.ssh/deploy_key "root@$SSH_HOST" '
+            set -e
+            cd /root/vps-nginx
+            git fetch origin
+            git reset --hard origin/main
+            ./deploy.sh
+            echo "DEPLOY_OK $(git rev-parse --short HEAD)"
+          '
+
+      - name: Report failure
+        if: failure()
+        run: echo "Deploy failed — check previous step logs. VPS unchanged or partially updated."
