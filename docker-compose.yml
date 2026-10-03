@@ -21,7 +21,9 @@ services:
 networks:
   vps-net:
     name: vps-net
-    driver: bridge
+    # External: la red ya existe y debe sobrevivir a los down/up del deploy
+    # (etapa 2: apps propias se unen a esta misma red).
+    external: true
 
 volumes:
   acme-state:
