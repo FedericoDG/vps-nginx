@@ -59,9 +59,9 @@
   - `curl -sI http://localhost/` desde dentro o fuera del contenedor devuelve `301` con `Location: https://...` (RF3).
   - Path `/.well-known/acme-challenge/` queda excluido del redirect (requisito de RF7).
 
-### T7 — `nginx/conf.d/10-placeholder.conf` + `nginx/static/placeholder.html` + `nginx/certs/placeholder.*`
+### T7 — `nginx/conf.d/10-vhost-principal.conf` + `nginx/static/placeholder.html` + `nginx/certs/placeholder.*`
 - **Estado:** done — verificado: `curl -k https://localhost/` → 200 placeholder (RF2), `docker logs` muestra accesos (RF6), reload sin caída (RF5)
-- **Archivos:** `nginx/conf.d/10-placeholder.conf`, `nginx/static/placeholder.html`, `nginx/certs/placeholder.crt/.key` (self-signed local)
+- **Archivos:** `nginx/conf.d/10-vhost-principal.conf`, `nginx/static/placeholder.html`, `nginx/certs/placeholder.crt/.key` (self-signed local)
 - **Depende de:** T6
 - **Scope:** vhost `:443` que sirve el placeholder estático e incluye el snippet TLS. Incluye generación local de cert provisional/self-signed para verificación en máquina sin dominio real.
 - **AC:**
@@ -71,7 +71,7 @@
 
 ### T8 — Emisión con ACME en staging (requiere VPS real)
 - **Estado:** done — verificado en VPS: cert de staging emitido (volumen acme-state: `account.key` + `<hostname>-*.crt/key`), issuer `(STAGING) Baloney Bulgur YE2` servido en 443, `curl -sI http` → 301, challenge HTTP-01 con 200 desde validadores LE. Fix aplicado en el camino: `resolver ipv6=off` (bridge sin IPv6; LE staging tiene AAAA) y recreate de contenedor tras `git pull` (bind-mount por archivo ancla al inodo). Commits `6890d13` + `da10b7e`.
-- **Archivos:** `nginx/conf.d/00-acme-and-redirect.conf` (bloque `acme_issuer` apuntando a staging), `nginx/conf.d/10-placeholder.conf` (activación ACME en 443), `nginx/nginx.conf` (contacto + resolver)
+- **Archivos:** `nginx/conf.d/00-acme-and-redirect.conf` (bloque `acme_issuer` apuntando a staging), `nginx/conf.d/10-vhost-principal.conf` (activación ACME en 443), `nginx/nginx.conf` (contacto + resolver)
 - **Depende de:** T7 + fases 0-1 del runbook (VPS con Docker + hostname DuckDNS resuelto)
 - **Scope:** configurar issuer ACME contra el entorno **staging** de Let's Encrypt, levantar en VPS y verificar issuance.
 - **AC:**

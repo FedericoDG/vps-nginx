@@ -68,7 +68,7 @@ vps-nginx/
 ├── nginx/
 │   ├── conf.d/
 │   │   ├── 00-acme-and-redirect.conf
-│   │   └── 10-placeholder.conf
+│   │   └── 10-vhost-principal.conf
 │   ├── snippets/
 │   │   └── tls-params.conf
 │   └── static/
@@ -108,7 +108,7 @@ Cada fase termina con verificación ligada a un RF/RNF. Si un paso requiere "mem
 |------|-------------------------|
 | C1, C2, C3 | `docker-compose.yml` + red/volúmenes |
 | RF1 | `docker-compose.yml` (servicio nginx) |
-| RF2 | `10-placeholder.conf` + `static/placeholder.html` |
+| RF2 | `10-vhost-principal.conf` + `static/placeholder.html` |
 | RF3, RF7 | `00-acme-and-redirect.conf` (ACME nativo + redirect) |
 | RF4 | Estructura `nginx/` + montaje RO |
 | RF5 | Flujo `nginx -t` + reload (documentado en runbook + compose) |
