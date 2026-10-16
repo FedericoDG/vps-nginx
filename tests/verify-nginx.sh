@@ -85,11 +85,11 @@ chk() {
 }
 chk "/api-pos-offline/updates/latest.json?x=1" "/api/updates/latest.json?x=1"
 chk "/api/updates/latest.json?x=1"             "/api/updates/latest.json?x=1"
-# El panel pasó a basePath /panel: la URL vieja ahora reescribe a la nueva.
+# El panel pasó a basePath /admin: la URL vieja ahora reescribe a la nueva.
 # Es un cambio deliberado, así que este caso no compara contra el baseline
 # (el commit viejo sigue devolviendo /panel-pos-offline/algo por diseño).
-[ "$(curl -s "http://127.0.0.1:18080/panel-pos-offline/algo")" = "/panel/algo" ] \
-  || { echo "FAIL P2: el rewrite del panel no reescribe a /panel"; exit 1; }
+[ "$(curl -s "http://127.0.0.1:18080/panel-pos-offline/algo")" = "/admin/algo" ] \
+  || { echo "FAIL P2: el rewrite del panel no reescribe a /admin"; exit 1; }
 
 # --- P3: el orden "set" antes de "rewrite ... break" es obligatorio ----------
 # Invertido, el break corta la fase de rewrite y la variable queda sin inicializar.
